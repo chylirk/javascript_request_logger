@@ -1,7 +1,6 @@
 {
-  "name": "callBox",
+  "name": "callbox",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./src/index.js",
@@ -17,5 +16,14 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chylirk/javascript_request_logger.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chylirk/javascript_request_logger/issues"
+  },
+  "homepage": "https://github.com/chylirk/javascript_request_logger#readme",
+  "description": ""
 }

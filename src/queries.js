@@ -1,6 +1,6 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: 'holden',
+  user: 'lee',
   host: 'localhost',
   database: 'callbox',
   password: 'password',
@@ -39,7 +39,7 @@ const createBox = (req, res) => {
     if (error) {
       throw error
     }
-    res.status(201).json(`New box created with url: ${'callbox.com/' + results.rows[0].endpoint_path}`);
+    res.status(201).json(`New box created with url: ${'holdenchoi.com/' + results.rows[0].endpoint_path}`);
   })
 }
 
