@@ -1,0 +1,29 @@
+doctype html
+
+html(lang='en')
+body
+  each req in requests 
+    h2 Request
+    p Method: #{req.data.method}
+    p Host:  #{req.data.host}
+    p Date: #{req.created_at}
+    p Body: #{JSON.stringify(req.data.body)}
+    p Size:
+    p Headers:
+    ul
+      each val, key in req.data
+        li= key + ': ' + JSON.stringify(val)
+
+script.
+  const socket = new WebSocket('ws://localhost:3000');
+  socket.addEventListener('open', function (event) {
+    socket.send('Connected to WS Server!');
+  });
+
+  socket.addEventListener('message', function (event) {
+    console.log('Message from server ', event.data);
+  });
+
+  const sendMessage = () => {
+    socket.send('Hello from Client1!');
+  }

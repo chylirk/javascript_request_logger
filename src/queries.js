@@ -1,6 +1,6 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: 'lee',
+  user: 'holden',
   host: 'localhost',
   database: 'callbox',
   password: 'password',
@@ -11,25 +11,15 @@ const generateId = () => {
   return Math.random().toString(16).slice(2)
 }
 
-const getBoxes = (req, res) => {
-  pool.query('SELECT * FROM endpoints ORDER BY endpoint_id ASC', (error, results) => {
-    if (error) {
-      throw error
-    }
-    res.status(200).json(results.rows)
-  })
+const getBoxes = async () => {
+  const results = await pool.query('SELECT * FROM endpoints ORDER BY endpoint_id ASC');
+  return results.rows;
 }
 
-const getBox = (req, res) => {
-  console.log("Get Box");
+const getBox = async (req, _) => {
   const path = req.params.path;
-
-  pool.query('SELECT * FROM requests r WHERE r.endpoint_id = (SELECT e.endpoint_id FROM endpoints e WHERE e.endpoint_path = $1)', [path], (error, results) => {
-    if (error) {
-      throw error
-    }
-    res.status(200).json(results.rows)
-  })
+  const results = await pool.query('SELECT * FROM requests r WHERE r.endpoint_id = (SELECT e.endpoint_id FROM endpoints e WHERE e.endpoint_path = $1) ORDER BY created_at DESC', [path]);
+  return results.rows;
 }
 
 const createBox = (req, res) => {
@@ -53,17 +43,10 @@ const logRequest = async (req, res) => {
   }
 
   const endpointId = parseInt(rows[0].endpoint_id, 10);
-  const reqInfo = {
-    Method: req.method,
-    Protocol: req.protocol,
-    Host: req.headers.host,
-    "User-Agent": req.headers['user-agent'],
-    Accept: req.headers.accept,
-    "X-Forwarded-For": req.headers['x-forwarded-for'],
-    "X-Forwarded-Proto": req.headers['x-forwarded-proto'],
-    "Accepted-Encoding": req.headers['accept-encoding'],
-  }
-  const data = JSON.stringify(reqInfo);
+  let data = req.headers;
+  data.method = req.method;
+  data.body = req.body;
+  data = JSON.stringify(data);
 
   pool.query('INSERT INTO requests (endpoint_id, data) VALUES ($1, $2) RETURNING data', [endpointId, data], (error, result) => {
     if (error) {
