@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rox</title>
+  </head>
+  <body>
+    <h1>Requests</h1>
+    <ul id="requests"></ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script>
+      const socket = io();
+
+      const requests = document.getElementById('requests');
+
+      socket.on('new request', (req) => {
+        const item = document.createElement('li');
+        item.textContent = JSON.stringify(req);
+        requests.appendChild(item);
+      });
+    </script>
+  </body>
+</html>

@@ -38,8 +38,7 @@ const logRequest = async (req, res) => {
   const { rows } = await pool.query('SELECT endpoint_id FROM endpoints WHERE endpoint_path = $1', [endpoint_path]); 
 
   if (rows.length == 0) {
-    res.status(404).json("That box does not exist, please try another box or create a new one");
-    return;
+    return 'error';
   }
 
   const endpointId = parseInt(rows[0].endpoint_id, 10);
@@ -48,15 +47,8 @@ const logRequest = async (req, res) => {
   data.body = req.body;
   data = JSON.stringify(data);
 
-  pool.query('INSERT INTO requests (endpoint_id, data) VALUES ($1, $2) RETURNING data', [endpointId, data], (error, result) => {
-    if (error) {
-      throw error
-    }
-
-    const returnData = result.rows[0].data;
-
-    res.status(201).json(`request logged with data: ${JSON.stringify(returnData)}`); 
-  })
+  const results = await pool.query('INSERT INTO requests (endpoint_id, data) VALUES ($1, $2) RETURNING *', [endpointId, data]);
+  return results;
 }
 
 module.exports = {

@@ -1,29 +1,56 @@
 doctype html
 
 html(lang='en')
-body
+head 
+  title Rox
+body 
+  h1 Requests
+  .requests
   each req in requests 
     h2 Request
     p Method: #{req.data.method}
     p Host:  #{req.data.host}
     p Date: #{req.created_at}
     p Body: #{JSON.stringify(req.data.body)}
-    p Size:
     p Headers:
     ul
       each val, key in req.data
         li= key + ': ' + JSON.stringify(val)
 
-script.
-  const socket = new WebSocket('ws://localhost:3000');
-  socket.addEventListener('open', function (event) {
-    socket.send('Connected to WS Server!');
-  });
+  script(src='/socket.io/socket.io.js')
+  script(src='https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js')
+  script.
+    const socket = io();
+    const requestsDiv = document.querySelector('.requests');
 
-  socket.addEventListener('message', function (event) {
-    console.log('Message from server ', event.data);
-  });
+    socket.on('new request', (req) => {
+      console.log(req)
+      const newRequest = document.createElement('div');
 
-  const sendMessage = () => {
-    socket.send('Hello from Client1!');
-  }
+      const ul = document.createElement('ul');
+      for (const [key, value] of Object.entries(req.data)) {
+        const li = document.createElement('li');
+        li.textContent = `${key}: ${value}`;
+        ul.prepend(li);
+      }
+      newRequest.prepend(ul);
+      const headers = document.createElement('p');
+      headers.textContent = 'Headers:';
+      newRequest.prepend(headers);
+      const body = document.createElement('p');
+      body.textContent = 'Body: ' + JSON.stringify(req.data.body);
+      newRequest.prepend(body);
+      const date = document.createElement('p');
+      date.textContent = 'Date: ' + req.created_at;
+      newRequest.prepend(date);
+      const host = document.createElement('p');
+      host.textContent = 'Host: ' + req.data.host;
+      newRequest.prepend(host);
+      const method = document.createElement('p');
+      method.textContent = 'Method: ' + req.data.method;
+      newRequest.prepend(method);
+      const h2 = document.createElement('h2');
+      h2.textContent = 'Request';
+      newRequest.prepend(h2);
+      requestsDiv.prepend(newRequest);
+    });
