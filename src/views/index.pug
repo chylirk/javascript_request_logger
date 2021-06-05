@@ -1,0 +1,12 @@
+doctype html
+html(lang='en')
+head 
+  meta(charset="utf-8")
+  title Callbox
+  link(href="./styles/style.css", rel="stylesheet")
+body.w-full.bg-grey-lighter.h-screen.flex.flex-col.justify-center
+  .w-64.mx-auto.bg-white.shadow-md.rounded.p-8.mb-4
+    h1.block.text-grey-darkest.font-bold.mb-2 Welcome to Callbox!
+    form(action='/boxes', method='post')
+      input(type='submit', value='create a box')
+  p.text-grey.text-xs.text-center ©2021 Textrix.

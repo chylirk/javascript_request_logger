@@ -22,15 +22,17 @@ const getBox = async (req, _) => {
   return results.rows;
 }
 
-const createBox = (req, res) => {
+const createBox = async (req, res) => {
   const path = generateId();
-
-  pool.query('INSERT INTO endpoints (endpoint_path) VALUES ($1) RETURNING endpoint_path', [path], (error, results) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).json(`New box created with url: ${'holdenchoi.com/' + results.rows[0].endpoint_path}`);
-  })
+  const results = await pool.query('INSERT INTO endpoints (endpoint_path) VALUES ($1) RETURNING endpoint_path', [path]);
+  return results.rows[0].endpoint_path;
+  // pool.query('INSERT INTO endpoints (endpoint_path) VALUES ($1) RETURNING endpoint_path', [path], (error, results) => {
+  //   if (error) {
+  //     throw error
+  //   }
+  //   const endpoint = results.rows[0].endpoint_path;
+  //   res.status(201).json(`New box created! Send requests to: holdenchoi.com/${endpoint}. Inspect your requests at: holdenchoi.com/inspect/${endpoint}`);
+  // })
 }
 
 const logRequest = async (req, res) => {

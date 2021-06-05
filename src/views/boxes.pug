@@ -1,3 +1,14 @@
-ul 
-  each val in boxes 
-    li= val
+doctype html
+html(lang='en')
+head 
+  title Callbox
+  link(href="./styles/style.css", rel="stylesheet")
+body.w-full.bg-grey-lighter.flex.flex-col.justify-center
+  .w-80.mx-auto.bg-white.shadow-md.rounded.p-8.mb-4
+    h1 Open Boxes
+    p Click to see requests for each box
+  .w-64.mx-auto.bg-white.shadow-md.rounded.p-8.mb-4
+    ul 
+      each val in boxes 
+        li
+          a(href=`/inspect/${val}`).block.text-gray-600.mt-2.hover_text-red-800 #{val}
